@@ -49,28 +49,37 @@ void config_status(const char* result) {
 	}
 }
 
-void add_info(const char *result, const char *strstart, char *current) {
+void append_str(char **current, const char *str) {
+	for (int i = 0; i < strlen(str); i++) {
+		printf("(%c) ", str[i]);
+		*((*current)++) = *(str++);
+	}
+}
+
+void add_info(const char *result, const char *strstart, char **current) {
 	char *infostart = strstr(result, strstart);
 	int len = strlen(strstart);
 	char *c;
+	if (!infostart) {
+		return;
+	}
 	infostart += len;
+	c = infostart;
 	for (;;) {
-		c = infostart;
 		if (*c == '\n' || *c == EOF) {
-			*current = '\0';
+			**current = '\0';
 			break;
 		}
-		*current = *c;
-		current++;
-		infostart++;
+		*((*current)++) = *(c++);
 	}
 }
 
 void fill_info(const char *result) {
 	char *begining = &info[0];
 	info[0] = '\0';
-	add_info(result, "tag artist ", begining);
-	add_info(result, "tag title ", begining);
+	add_info(result, "\ntag artist ", &begining);
+	append_str(&begining, " - ");
+	add_info(result, "\ntag title ", &begining);
 	printf("%s", info);
 }
 
