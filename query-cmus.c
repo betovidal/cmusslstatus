@@ -50,9 +50,12 @@ void config_status(const char* result) {
 }
 
 void append_str(char **current, const char *str) {
-	for (int i = 0; i < strlen(str); i++) {
-		printf("(%c) ", str[i]);
+	for (;;) {
+		/* printf("(%c)", str[i]); */
 		*((*current)++) = *(str++);
+		if (*str == '\0') {
+			break;
+		}
 	}
 }
 
