@@ -7,6 +7,8 @@
 char buf[1024];
 int last = 0;
 char info[1024];
+char timeinfo[7]; /* No audio files over 9 hours! No sir! */
+char secinfo[20]; /* Because lhgjklhasljkda */
 enum { STOPPED , PAUSED, PLAYING};
 int cmusst;
 
@@ -77,13 +79,34 @@ void add_info(const char *result, const char *strstart, char **current) {
 	}
 }
 
+void gen_time_format() {
+	int hours = 0, minutes = 0, seconds = atoi(secinfo);
+	int ressec, resmin;
+	ressec = seconds % 60;
+	minutes = (seconds - ressec) / 60;
+	resmin = minutes % 60;
+	hours = (minutes - resmin) / 60;
+	printf("\n%d hours, %d minutes and %d seconds.\n", hours, resmin, ressec);
+}
+
+
 void fill_info(const char *result) {
-	char *begining = &info[0];
+	char *infostart = &info[0];
+	char *secstart = &secinfo[0];
 	info[0] = '\0';
-	add_info(result, "\ntag artist ", &begining);
-	append_str(&begining, " - ");
-	add_info(result, "\ntag title ", &begining);
+	secinfo[0] = '\0';
+	/* info */
+	add_info(result, "\ntag artist ", &infostart);
+	append_str(&infostart, " - ");
+	add_info(result, "\ntag title ", &infostart);
 	printf("%s", info);
+	/* secinfo */
+	add_info(result, "\nposition ", &secstart);
+	gen_time_format();
+	printf("%s", secinfo);
+}
+
+void fill_time(const char *result) {
 }
 
 const char *
@@ -95,6 +118,7 @@ query_cmus() {
 	}
 	config_status(result);
 	fill_info(result);
+	fill_time(result);
 	return NULL;
 }
 
