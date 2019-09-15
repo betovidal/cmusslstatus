@@ -105,7 +105,6 @@ void fill_info(const char *result) {
 	/* secinfo */
 	add_info(result, "\nposition ", &secstart);
 	gen_time_format();
-	printf("%s", secinfo);
 }
 
 void fill_time(const char *result) {
