@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "util.h"
+#include <unistd.h>
 
 char buf[1024];
 int last = 0;
@@ -17,21 +18,22 @@ const char *
 run_command_nl(const char *cmd)
 {
 	char *p;
+	char rchar;
 	FILE *fp;
 	char *start = &buf[0];
 	if (!(fp = popen(cmd, "r"))) {
 		warn("popen '%s':", cmd);
 		return NULL;
 	}
-	while ((*p = fgetc(fp)) != EOF) {
-		*start = *p;
+	while ((rchar = fgetc(fp)) != EOF) {
+		*start = rchar;
 		start++;
 	}
 	if (pclose(fp) < 0) {
 		warn("pclose '%s':", cmd);
 		return NULL;
 	}
-	if (!p) {
+	if (!rchar) {
 		return NULL;
 	}
 	if ((p = strrchr(buf, '\n'))) {
@@ -123,6 +125,9 @@ query_cmus() {
 }
 
 int main (int argc, char *argv[]) {
-	query_cmus();
+	while (1) {
+		query_cmus();
+		sleep(1);
+	}
 	return 0;
 }

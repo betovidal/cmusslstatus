@@ -21,8 +21,7 @@ endif
 SRCFILES := $(wildcard *.c)
 OBJFILES := $(patsubst %.c,%.o,$(SRCFILES))
 DEPFILES := $(patsubst %.c,%.d,$(SRCFILES))
-WARNINGS := -Wall
-CFLAGS   := -std=c99 -pedantic $(WARNINGS) $(LDFLAGS)
+CFLAGS   := $(LDFLAGS)
 # Let's see if I remember correclty... first recipe will be:
 $(OUTNAME): $(OBJFILES)
 	$(CC) $(LDIRS) $(MAIN).o $(subst $(MAIN).o,,$(OBJFILES)) -o $@ ${CFLAGS}
